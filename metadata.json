@@ -1,0 +1,10 @@
+{
+  "name": "ExpiTrack - Expiry Date & Warranty Tracker",
+  "description": "Personal vault that tracks expiry dates for groceries, medicines, and warranties with photo proof, smart OCR, and proactive reminders.",
+  "requestFramePermissions": [
+    "camera"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
