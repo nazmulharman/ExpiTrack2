@@ -1,5 +1,5 @@
 {
-  "id": "/",
+  "id": "app.expitrack.vault",
   "name": "ExpiTrack - Personal Expiry Vault",
   "short_name": "ExpiTrack",
   "description": "Personal vault that tracks expiry dates for groceries, medicines, and warranties with photo proof, smart OCR, and proactive reminders.",
@@ -11,18 +11,6 @@
   "theme_color": "#131b2e",
   "categories": ["utilities", "lifestyle", "productivity"],
   "icons": [
-    {
-      "src": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/vaultwarden.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/vaultwarden.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable"
-    },
     {
       "src": "/pwa-192x192.png",
       "sizes": "192x192",
@@ -40,12 +28,6 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
-    },
-    {
-      "src": "/icon.svg",
-      "sizes": "512x512",
-      "type": "image/svg+xml",
-      "purpose": "any"
     }
   ],
   "shortcuts": [
@@ -54,14 +36,26 @@
       "short_name": "Scan OCR",
       "description": "Quickly scan barcode or OCR expiry text",
       "url": "/?action=scan",
-      "icons": [{ "src": "/pwa-192x192.png", "sizes": "192x192" }]
+      "icons": [
+        {
+          "src": "/pwa-192x192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
     },
     {
       "name": "View Urgency Alerts",
       "short_name": "Alerts",
       "description": "Check expiring items and medicine schedules",
       "url": "/?action=alerts",
-      "icons": [{ "src": "/pwa-192x192.png", "sizes": "192x192" }]
+      "icons": [
+        {
+          "src": "/pwa-192x192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
     }
   ],
   "related_applications": [

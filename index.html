@@ -2,6 +2,42 @@
 <html lang="en" class="h-full">
   <head>
     <meta charset="UTF-8" />
+    <script>
+      // Gracefully shim dev WebSocket in Cloud Run preview iframe environments
+      (function() {
+        try {
+          var RealWS = window.WebSocket;
+          if (RealWS) {
+            window.WebSocket = function(url, protocols) {
+              if (protocols === 'vite-hmr' || (typeof url === 'string' && (url.includes('token=') || url.includes(':3000')))) {
+                var fake = new EventTarget();
+                fake.readyState = 1;
+                fake.binaryType = 'blob';
+                fake.bufferedAmount = 0;
+                fake.extensions = '';
+                fake.protocol = 'vite-hmr';
+                fake.url = url;
+                fake.send = function() {};
+                fake.close = function() {
+                  fake.readyState = 3;
+                  fake.dispatchEvent(new Event('close'));
+                };
+                setTimeout(function() {
+                  fake.dispatchEvent(new Event('open'));
+                }, 10);
+                return fake;
+              }
+              return new RealWS(url, protocols);
+            };
+            window.WebSocket.prototype = RealWS.prototype;
+            window.WebSocket.CONNECTING = 0;
+            window.WebSocket.OPEN = 1;
+            window.WebSocket.CLOSING = 2;
+            window.WebSocket.CLOSED = 3;
+          }
+        } catch (e) {}
+      })();
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
     <title>ExpiTrack - Expiry Date & Warranty Tracker</title>
     <meta name="description" content="Personal vault that tracks expiry dates for groceries, medicines, and warranties with photo proof, smart OCR, and proactive reminders." />

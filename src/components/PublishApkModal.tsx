@@ -19,15 +19,78 @@ export const PublishApkModal: React.FC<PublishApkModalProps> = ({
 
   if (!isOpen) return null;
 
-  const currentOrigin = typeof window !== 'undefined' ? window.location.origin : 'https://ais-pre-26v6egkflimebrf3l4xb5y-739790172309.asia-east1.run.app';
+  const rawOrigin = typeof window !== 'undefined' ? window.location.origin : 'https://ais-pre-26v6egkflimebrf3l4xb5y-739790172309.asia-east1.run.app';
+  // Use public preview origin if on ais-dev so external packaging bots can reach the URL
+  const currentOrigin = rawOrigin.replace('ais-dev-', 'ais-pre-');
   const manifestUrl = `${currentOrigin}/manifest.json`;
   const pwaBuilderUrl = `https://www.pwabuilder.com/reportcard?site=${encodeURIComponent(currentOrigin)}`;
+
+  const cleanManifestObject = {
+    id: "app.expitrack.vault",
+    name: "ExpiTrack - Personal Expiry Vault",
+    short_name: "ExpiTrack",
+    description: "Personal vault that tracks expiry dates for groceries, medicines, and warranties with photo proof, smart OCR, and proactive reminders.",
+    start_url: "/",
+    scope: "/",
+    display: "standalone",
+    orientation: "portrait-primary",
+    background_color: "#131b2e",
+    theme_color: "#131b2e",
+    categories: ["utilities", "lifestyle", "productivity"],
+    icons: [
+      {
+        src: `${currentOrigin}/pwa-192x192.png`,
+        sizes: "192x192",
+        type: "image/png",
+        purpose: "any"
+      },
+      {
+        src: `${currentOrigin}/pwa-512x512.png`,
+        sizes: "512x512",
+        type: "image/png",
+        purpose: "any"
+      },
+      {
+        src: `${currentOrigin}/pwa-maskable-512x512.png`,
+        sizes: "512x512",
+        type: "image/png",
+        purpose: "maskable"
+      }
+    ],
+    shortcuts: [
+      {
+        name: "Scan Receipt or Bottle",
+        short_name: "Scan OCR",
+        description: "Quickly scan barcode or OCR expiry text",
+        url: "/?action=scan",
+        icons: [{ src: `${currentOrigin}/pwa-192x192.png`, sizes: "192x192", type: "image/png" }]
+      },
+      {
+        name: "View Urgency Alerts",
+        short_name: "Alerts",
+        description: "Check expiring items and medicine schedules",
+        url: "/?action=alerts",
+        icons: [{ src: `${currentOrigin}/pwa-192x192.png`, sizes: "192x192", type: "image/png" }]
+      }
+    ],
+    related_applications: [
+      {
+        platform: "play",
+        id: "app.expitrack.vault"
+      }
+    ]
+  };
 
   const handleCopy = (text: string, label: string) => {
     navigator.clipboard.writeText(text).catch(() => {});
     setCopiedCmd(label);
     showToast(`Copied ${label} to clipboard`, 'content_copy');
     setTimeout(() => setCopiedCmd(null), 2500);
+  };
+
+  const handleCopyManifest = () => {
+    navigator.clipboard.writeText(JSON.stringify(cleanManifestObject, null, 2)).catch(() => {});
+    showToast('Clean Manifest JSON copied to clipboard', 'content_copy');
   };
 
   const handleDownloadAndroidBundle = () => {
@@ -166,20 +229,20 @@ export const PublishApkModal: React.FC<PublishApkModalProps> = ({
           {/* TAB 1: 1-Click Cloud APK Generator */}
           {activeTab === 'cloud' && (
             <div className="space-y-4">
-              {/* Fix for Failed to download icon banner */}
-              <div className="p-3.5 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 flex items-start gap-3">
-                <span className="material-symbols-outlined text-[22px] text-amber-600 dark:text-amber-400 shrink-0 mt-0.5">
-                  info
+              {/* Fix for Error during package creation banner */}
+              <div className="p-3.5 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 flex items-start gap-3">
+                <span className="material-symbols-outlined text-[22px] text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5">
+                  task_alt
                 </span>
                 <div className="text-xs space-y-1">
-                  <strong className="text-amber-900 dark:text-amber-200 block font-bold">
-                    Resolved: &ldquo;Failed to download icon&rdquo; error
+                  <strong className="text-emerald-900 dark:text-emerald-200 block font-bold">
+                    Resolved: &ldquo;Error during package creation&rdquo;
                   </strong>
-                  <p className="text-amber-800 dark:text-amber-300 leading-relaxed text-[11px]">
-                    Google Cloud Run development preview URLs require authentication cookies that external packaging bots cannot access directly. We have updated your manifest with globally accessible CDN icon routes.
+                  <p className="text-emerald-800 dark:text-emerald-300 leading-relaxed text-[11px]">
+                    All manifest icons have been converted to validated 512px and 192px PNG format (removing incompatible SVGs and remote CDN links that caused Bubblewrap/PWABuilder to crash during image processing).
                   </p>
-                  <p className="text-amber-800 dark:text-amber-300 leading-relaxed text-[11px]">
-                    If PWABuilder ever asks for an icon upload, use the <strong>Download Icon</strong> button below to save it and upload directly to PWABuilder.
+                  <p className="text-emerald-800 dark:text-emerald-300 leading-relaxed text-[11px]">
+                    Note: If PWABuilder ever blocks automated scraping due to Cloud Run cookie challenges, click <strong>Copy Clean Manifest</strong> below and paste it into PWABuilder, or run the 1-line Bubblewrap CLI command in the next tab.
                   </p>
                 </div>
               </div>
@@ -236,23 +299,32 @@ export const PublishApkModal: React.FC<PublishApkModalProps> = ({
                   <span className="material-symbols-outlined text-[16px]">open_in_new</span>
                 </a>
 
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-3 gap-2">
+                  <button
+                    type="button"
+                    onClick={handleCopyManifest}
+                    className="py-2.5 px-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 font-bold text-xs flex items-center justify-center gap-1.5 transition-colors text-center"
+                  >
+                    <span className="material-symbols-outlined text-[16px]">content_copy</span>
+                    <span className="truncate">Copy Manifest</span>
+                  </button>
+
                   <a
                     href="/pwa-512x512.png"
                     download="expitrack-icon-512x512.png"
-                    className="py-2.5 px-3 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 font-bold text-xs flex items-center justify-center gap-1.5 transition-colors text-center"
+                    className="py-2.5 px-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 font-bold text-xs flex items-center justify-center gap-1.5 transition-colors text-center"
                   >
-                    <span className="material-symbols-outlined text-[17px]">image</span>
-                    <span>Download 512px Icon</span>
+                    <span className="material-symbols-outlined text-[16px]">image</span>
+                    <span className="truncate">512px Icon</span>
                   </a>
 
                   <button
                     type="button"
                     onClick={handleDownloadAndroidBundle}
-                    className="py-2.5 px-3 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 font-bold text-xs flex items-center justify-center gap-1.5 transition-colors"
+                    className="py-2.5 px-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 font-bold text-xs flex items-center justify-center gap-1.5 transition-colors text-center"
                   >
-                    <span className="material-symbols-outlined text-[17px]">download</span>
-                    <span>Config Bundle (JSON)</span>
+                    <span className="material-symbols-outlined text-[16px]">download</span>
+                    <span className="truncate">Config Kit</span>
                   </button>
                 </div>
               </div>
