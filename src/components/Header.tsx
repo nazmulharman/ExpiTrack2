@@ -76,9 +76,10 @@ export const Header: React.FC<HeaderProps> = ({
             }}
           >
             <img
-              src="https://lh3.googleusercontent.com/aida/AEtjO1U5U0JV-qKAx9hwch6ezL0VvvLxorsvKCJy4WtE07JyNue3FvkZBN21UlDZvyJA0O21367XxzLJVVUcwO9U5wQ9IG1OjZi9yleAts3DI9n_bss3qvI_SCRHOH5ljgRgxvWP1g7adpwp2uufU3z2CY7nLdKKUcLSNyE5IlJTAGEwMSRCSwBa1sae4bNR5LYg1PJpIqsrRyBQXUWP9GJFTHQhvbG7cduRSfRo4sEq33v_PsSHia1cqP62OY4"
+              src="/logo.jpg"
               alt="ExpiTrack Logo"
-              className="h-8 w-auto object-contain"
+              className="h-9 w-9 rounded-xl object-cover shadow-xs border border-white/20 dark:border-white/10 ring-1 ring-black/5 dark:ring-white/10"
+              referrerPolicy="no-referrer"
             />
             <div className="flex flex-col">
               <div className="flex items-center gap-1.5">
@@ -132,11 +133,18 @@ export const Header: React.FC<HeaderProps> = ({
             title="Account, Switch Account & Settings"
             className="w-10 h-10 flex items-center justify-center rounded-full p-0.5 hover:ring-2 hover:ring-[#005c55]/40 transition-all active:scale-95 relative"
           >
-            <img
-              src={profile?.avatarUrl || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=250&q=80"}
-              alt={profile?.name || "User Profile"}
-              className="w-8 h-8 rounded-full object-cover border border-slate-200 dark:border-slate-700"
-            />
+            {profile?.avatarUrl ? (
+              <img
+                src={profile.avatarUrl}
+                alt={profile?.name || "User Profile"}
+                className="w-8 h-8 rounded-full object-cover border border-slate-200 dark:border-slate-700"
+                referrerPolicy="no-referrer"
+              />
+            ) : (
+              <div className="w-8 h-8 rounded-full bg-[#005c55] text-white flex items-center justify-center shadow-xs">
+                <span className="material-symbols-outlined text-[18px]">account_circle</span>
+              </div>
+            )}
             {profile?.isGoogleLinked && (
               <span className="absolute bottom-1 right-1 w-2.5 h-2.5 rounded-full bg-[#34A853] border-2 border-white dark:border-[#131b2e]"></span>
             )}

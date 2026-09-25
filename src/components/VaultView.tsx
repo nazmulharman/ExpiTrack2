@@ -6,6 +6,7 @@ interface VaultViewProps {
   items: ExpiryItem[];
   profile?: UserProfile;
   onOpenDossier: (items: ExpiryItem[]) => void;
+  onOpenPublishApk?: () => void;
   onBackupToDrive?: () => Promise<void>;
   onRestoreFromDrive?: () => Promise<void>;
   onConnectGoogle?: () => Promise<void>;
@@ -17,6 +18,7 @@ export const VaultView: React.FC<VaultViewProps> = ({
   items,
   profile,
   onOpenDossier,
+  onOpenPublishApk,
   onBackupToDrive,
   onRestoreFromDrive,
   onConnectGoogle,
@@ -357,6 +359,34 @@ export const VaultView: React.FC<VaultViewProps> = ({
             </div>
             <span className="material-symbols-outlined text-slate-400 text-[18px]">file_download</span>
           </button>
+
+          {/* Android APK & Google Play Publishing Package */}
+          {onOpenPublishApk && (
+            <button
+              onClick={onOpenPublishApk}
+              className="w-full p-3.5 rounded-2xl bg-gradient-to-r from-[#005c55]/10 via-[#0f766e]/10 to-transparent dark:from-[#005c55]/25 border border-[#005c55]/30 dark:border-[#6df5e1]/30 shadow-xs flex items-center justify-between text-left hover:border-[#005c55] transition-all active:scale-[0.99]"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-[#005c55] text-[#6df5e1] flex items-center justify-center shrink-0 shadow-xs">
+                  <span className="material-symbols-outlined text-[20px]">android</span>
+                </div>
+                <div className="flex flex-col">
+                  <div className="flex items-center gap-1.5">
+                    <span className="font-bold text-xs text-[#131b2e] dark:text-white">
+                      Android APK & Google Play Store Package
+                    </span>
+                    <span className="px-1.5 py-0.5 rounded-full bg-[#6df5e1]/30 text-[#005c55] dark:text-[#6df5e1] text-[9px] font-bold">
+                      APK / AAB
+                    </span>
+                  </div>
+                  <span className="text-[11px] text-[#3e4947] dark:text-[#bdc9c6]">
+                    Generate .apk, Google Play release bundle, or install to phone
+                  </span>
+                </div>
+              </div>
+              <span className="material-symbols-outlined text-[#005c55] dark:text-[#6df5e1] text-[18px]">arrow_forward_ios</span>
+            </button>
+          )}
         </div>
       </div>
 

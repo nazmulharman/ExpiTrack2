@@ -13,6 +13,18 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+
+    <!-- Web App Manifest & Android / iOS App Meta -->
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#131b2e" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="ExpiTrack" />
+    <link rel="icon" type="image/jpeg" href="/logo.jpg" />
+    <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+    <link rel="apple-touch-icon" href="/logo.jpg" />
+
     <script>
       (function() {
         try {
@@ -24,6 +36,13 @@
             document.documentElement.classList.remove('dark');
           }
         } catch (e) {}
+
+        // Service Worker registration for PWA & Android TWA
+        if ('serviceWorker' in navigator) {
+          window.addEventListener('load', function() {
+            navigator.serviceWorker.register('/sw.js').catch(function() {});
+          });
+        }
       })();
     </script>
   </head>

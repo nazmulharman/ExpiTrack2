@@ -38,21 +38,19 @@ let isSigningIn = false;
 const PROFILE_STORAGE_KEY = 'expitrack_user_profile';
 
 export const DEFAULT_USER_PROFILE: UserProfile = {
-  name: 'Nazmul Hoque',
-  email: 'nazmulsa213@gmail.com',
-  avatarUrl:
-    'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=250&q=80',
-  vaultName: "Nazmul's Master Vault",
-  plan: 'Pro Lifetime Vault Owner',
+  name: 'Personal Vault',
+  email: 'Offline Local Mode',
+  avatarUrl: '',
+  vaultName: 'My Expiry Vault',
+  plan: 'Standard Vault',
   isGoogleLinked: false,
 };
 
 export const GUEST_USER_PROFILE: UserProfile = {
   name: 'Guest User',
   email: 'Local Vault (Offline)',
-  avatarUrl:
-    'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=250&q=80',
-  vaultName: 'Personal Local Vault',
+  avatarUrl: '',
+  vaultName: 'My Expiry Vault',
   plan: 'Free Local Vault',
   isGoogleLinked: false,
 };
@@ -61,7 +59,13 @@ export const getStoredProfile = (): UserProfile => {
   try {
     const raw = localStorage.getItem(PROFILE_STORAGE_KEY);
     if (!raw) return DEFAULT_USER_PROFILE;
-    return { ...DEFAULT_USER_PROFILE, ...JSON.parse(raw) };
+    const parsed = JSON.parse(raw);
+    // Clear out any old demo/hardcoded personal profile details
+    if (parsed.email === 'nazmulsa213@gmail.com' || parsed.name === 'Nazmul Hoque' || parsed.vaultName?.includes('Nazmul')) {
+      localStorage.removeItem(PROFILE_STORAGE_KEY);
+      return DEFAULT_USER_PROFILE;
+    }
+    return { ...DEFAULT_USER_PROFILE, ...parsed };
   } catch {
     return DEFAULT_USER_PROFILE;
   }

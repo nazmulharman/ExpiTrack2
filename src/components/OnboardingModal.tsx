@@ -52,11 +52,12 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({ onComplete }) 
       <div className="w-full max-w-md bg-white dark:bg-[#131b2e] rounded-3xl shadow-2xl overflow-hidden flex flex-col border border-[#eaedff] dark:border-[#283044] max-h-[92vh]">
         {/* Top bar with Skip */}
         <div className="px-5 pt-4 pb-2 flex items-center justify-between">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2.5">
             <img
-              src="https://lh3.googleusercontent.com/aida/AEtjO1U5U0JV-qKAx9hwch6ezL0VvvLxorsvKCJy4WtE07JyNue3FvkZBN21UlDZvyJA0O21367XxzLJVVUcwO9U5wQ9IG1OjZi9yleAts3DI9n_bss3qvI_SCRHOH5ljgRgxvWP1g7adpwp2uufU3z2CY7nLdKKUcLSNyE5IlJTAGEwMSRCSwBa1sae4bNR5LYg1PJpIqsrRyBQXUWP9GJFTHQhvbG7cduRSfRo4sEq33v_PsSHia1cqP62OY4"
-              alt="Logo"
-              className="h-6 w-auto"
+              src="/logo.jpg"
+              alt="ExpiTrack Logo"
+              className="h-7 w-7 rounded-lg object-cover shadow-xs border border-white/20 dark:border-white/10"
+              referrerPolicy="no-referrer"
             />
             <span className="font-bold text-sm text-[#131b2e] dark:text-white">ExpiTrack</span>
           </div>

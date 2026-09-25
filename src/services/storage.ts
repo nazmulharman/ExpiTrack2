@@ -2,57 +2,30 @@ import { ExpiryItem, NotificationSettings } from '../types';
 import { INITIAL_ITEMS, DEFAULT_NOTIFICATION_SETTINGS } from '../data/initialData';
 import { getDaysRemaining } from '../utils/dateUtils';
 
-const ITEMS_STORAGE_KEY = 'expitrack_vault_items_v2';
+const ITEMS_STORAGE_KEY = 'expitrack_vault_items_v5';
 const SETTINGS_STORAGE_KEY = 'expitrack_notification_settings_v2';
 const RECENT_SCANS_KEY = 'expitrack_recent_scans_v2';
 
 export function getStoredItems(): ExpiryItem[] {
   try {
+    // Purge legacy storage versions so no stale demo data persists
+    if (localStorage.getItem('expitrack_vault_items_v2')) {
+      localStorage.removeItem('expitrack_vault_items_v2');
+    }
+    if (localStorage.getItem('expitrack_recent_scans_v2')) {
+      localStorage.removeItem('expitrack_recent_scans_v2');
+    }
+
     const raw = localStorage.getItem(ITEMS_STORAGE_KEY);
     if (!raw) {
-      localStorage.setItem(ITEMS_STORAGE_KEY, JSON.stringify(INITIAL_ITEMS));
-      return INITIAL_ITEMS;
+      localStorage.setItem(ITEMS_STORAGE_KEY, JSON.stringify([]));
+      return [];
     }
     const parsed: ExpiryItem[] = JSON.parse(raw);
-    const hasAnyPinnedDefined = parsed.some(i => i.isPinned !== undefined);
-
-    // Merge any missing initial items so newly introduced sample items appear
-    const existingIds = new Set(parsed.map(i => i.id));
-    const missingInitial = INITIAL_ITEMS.filter(i => !existingIds.has(i.id));
-    const combinedList = [...parsed, ...missingInitial];
-
-    // Backfill stock fields and isPinned for items if missing
-    return combinedList.map(item => {
-      let updatedItem = { ...item };
-      if (!hasAnyPinnedDefined) {
-        if (item.id === 'item-1' || item.id === 'item-3' || item.id === 'item-5') {
-          updatedItem.isPinned = true;
-        }
-      }
-      if (item.category === 'medicines' && item.initialStock === undefined) {
-        let defaultStock = 30;
-        if (item.quantity) {
-          const match = item.quantity.match(/(\d+)/);
-          if (match) defaultStock = parseInt(match[1], 10);
-        }
-        const consumed = item.status === 'expired' ? Math.max(0, defaultStock - 4) : Math.round(defaultStock * 0.35);
-        updatedItem = {
-          ...updatedItem,
-          initialStock: defaultStock,
-          consumedUnits: consumed,
-          currentStock: Math.max(0, defaultStock - consumed),
-          dailyDosage: 2,
-          unitType: item.name.toLowerCase().includes('capsule') ? 'capsules' : 'tablets',
-          lowStockThreshold: 6,
-          stockAlertsEnabled: true,
-          stockAlertThresholdDays: 5,
-        };
-      }
-      return updatedItem;
-    });
+    return parsed;
   } catch (e) {
     console.error('Error loading items from localStorage', e);
-    return INITIAL_ITEMS;
+    return [];
   }
 }
 

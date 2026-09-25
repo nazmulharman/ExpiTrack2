@@ -99,11 +99,18 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
           {/* Avatar Section */}
           <div className="flex flex-col items-center gap-3 p-4 rounded-2xl bg-[#f2f3ff] dark:bg-[#283044]">
             <div className="relative group">
-              <img
-                src={avatarUrl}
-                alt={name}
-                className="w-20 h-20 rounded-full object-cover shadow-md border-2 border-white dark:border-[#131b2e]"
-              />
+              {avatarUrl ? (
+                <img
+                  src={avatarUrl}
+                  alt={name || 'User Profile'}
+                  className="w-20 h-20 rounded-full object-cover shadow-md border-2 border-white dark:border-[#131b2e]"
+                  referrerPolicy="no-referrer"
+                />
+              ) : (
+                <div className="w-20 h-20 rounded-full bg-[#005c55] text-white flex items-center justify-center shadow-md border-2 border-white dark:border-[#131b2e]">
+                  <span className="material-symbols-outlined text-[40px]">account_circle</span>
+                </div>
+              )}
               <button
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
@@ -194,7 +201,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="e.g. Nazmul Hoque"
+                placeholder="e.g. Alex Morgan"
                 required
                 className="w-full px-3.5 py-2.5 rounded-xl bg-[#f2f3ff] dark:bg-[#283044] text-xs font-semibold text-[#131b2e] dark:text-white focus:ring-2 focus:ring-[#005c55] focus:outline-none"
               />
@@ -208,7 +215,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="e.g. nazmulsa213@gmail.com"
+                placeholder="e.g. user@example.com"
                 required
                 className="w-full px-3.5 py-2.5 rounded-xl bg-[#f2f3ff] dark:bg-[#283044] text-xs font-semibold text-[#131b2e] dark:text-white focus:ring-2 focus:ring-[#005c55] focus:outline-none"
               />
@@ -222,7 +229,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                 type="text"
                 value={vaultName}
                 onChange={(e) => setVaultName(e.target.value)}
-                placeholder="e.g. Nazmul's Master Vault"
+                placeholder="e.g. My Home & Family Vault"
                 className="w-full px-3.5 py-2.5 rounded-xl bg-[#f2f3ff] dark:bg-[#283044] text-xs font-semibold text-[#131b2e] dark:text-white focus:ring-2 focus:ring-[#005c55] focus:outline-none"
               />
             </div>

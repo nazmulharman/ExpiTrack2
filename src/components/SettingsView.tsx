@@ -11,6 +11,7 @@ interface SettingsViewProps {
   onGoBack: () => void;
   onOpenProfileEdit: () => void;
   onOpenOnboarding?: () => void;
+  onOpenPublishApk?: () => void;
   onGoogleSignIn: () => Promise<void>;
   onGoogleSignOut: (resetToGuest?: boolean) => Promise<void>;
   onSwitchAccount: () => Promise<void>;
@@ -30,6 +31,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
   onGoBack,
   onOpenProfileEdit,
   onOpenOnboarding,
+  onOpenPublishApk,
   onGoogleSignIn,
   onGoogleSignOut,
   onSwitchAccount,
@@ -116,11 +118,18 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
         <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-3 min-w-0">
             <div className="relative shrink-0">
-              <img
-                src={profile.avatarUrl}
-                alt={profile.name}
-                className="w-14 h-14 rounded-full object-cover shadow-sm border border-slate-200 dark:border-slate-700"
-              />
+              {profile.avatarUrl ? (
+                <img
+                  src={profile.avatarUrl}
+                  alt={profile.name}
+                  className="w-14 h-14 rounded-full object-cover shadow-sm border border-slate-200 dark:border-slate-700"
+                  referrerPolicy="no-referrer"
+                />
+              ) : (
+                <div className="w-14 h-14 rounded-full bg-[#005c55] text-white flex items-center justify-center shadow-sm border border-slate-200 dark:border-slate-700">
+                  <span className="material-symbols-outlined text-[32px]">account_circle</span>
+                </div>
+              )}
               {profile.isGoogleLinked ? (
                 <div
                   className="absolute bottom-0 right-0 w-4 h-4 rounded-full bg-[#34A853] border-2 border-white dark:border-[#131b2e] flex items-center justify-center"
@@ -500,6 +509,34 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
         </div>
       </div>
 
+      {/* Android APK & Google Play Publishing Hub */}
+      <div className="bg-white dark:bg-[#131b2e] p-4 rounded-2xl shadow-sm border border-[#eaedff] dark:border-[#283044] space-y-3">
+        <div className="flex items-center justify-between">
+          <span className="text-xs font-bold uppercase tracking-wider text-[#005c55] dark:text-[#6df5e1] flex items-center gap-1.5">
+            <span className="material-symbols-outlined text-[18px]">android</span>
+            Android APK & Google Play
+          </span>
+          <span className="px-2 py-0.5 rounded-full bg-[#6df5e1]/30 text-[#005c55] dark:text-[#6df5e1] text-[10px] font-bold">
+            PWA / TWA Ready
+          </span>
+        </div>
+
+        <p className="text-xs text-[#3e4947] dark:text-[#bdc9c6] leading-relaxed">
+          Publish ExpiTrack as a signed Android APK, Google Play AAB bundle, or install directly on mobile devices with standalone fullscreen support.
+        </p>
+
+        <div className="pt-1">
+          <button
+            type="button"
+            onClick={onOpenPublishApk}
+            className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-[#005c55] to-[#0f766e] hover:from-[#0f766e] hover:to-[#005c55] text-white text-xs font-bold shadow-xs active:scale-95 transition-all flex items-center justify-center gap-2"
+          >
+            <span className="material-symbols-outlined text-[18px]">install_mobile</span>
+            <span>Publish / Build Android APK</span>
+          </button>
+        </div>
+      </div>
+
       {/* Data Management */}
       <div className="bg-white dark:bg-[#131b2e] p-4 rounded-2xl shadow-sm border border-[#eaedff] dark:border-[#283044] space-y-2">
         <span className="text-xs font-bold uppercase tracking-wider text-[#005c55] dark:text-[#6df5e1] flex items-center gap-1.5">
@@ -537,16 +574,16 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
 
           <button
             onClick={() => {
-              if (window.confirm('Reset all vault items and settings back to original initial state?')) {
+              if (window.confirm('Are you sure you want to clear all vault records? This will permanently delete all tracked items and start fresh.')) {
                 onResetData();
-                showToast('Vault reset to seed demonstration data', 'restart_alt');
+                showToast('Vault cleared: all items removed', 'delete_sweep');
               }
             }}
-            className="p-3 rounded-xl bg-red-50 dark:bg-red-950/30 hover:bg-red-100 text-left flex flex-col justify-between"
+            className="p-3 rounded-xl bg-red-50 dark:bg-red-950/30 hover:bg-red-100 dark:hover:bg-red-900/40 text-left flex flex-col justify-between"
           >
-            <span className="material-symbols-outlined text-[20px] text-red-600 mb-1">restart_alt</span>
-            <span className="font-bold text-xs text-red-700 dark:text-red-400">Reset Demo Data</span>
-            <span className="text-[10px] text-red-600/80">Re-seed initial state</span>
+            <span className="material-symbols-outlined text-[20px] text-red-600 mb-1">delete_sweep</span>
+            <span className="font-bold text-xs text-red-700 dark:text-red-400">Clear Vault Data</span>
+            <span className="text-[10px] text-red-600/80">Erase all items & start clean</span>
           </button>
         </div>
 
@@ -562,9 +599,17 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
       </div>
 
       {/* App Info footer */}
-      <div className="text-center py-2 text-xs text-[#3e4947] dark:text-[#bdc9c6] space-y-1">
-        <p className="font-bold">ExpiTrack Personal Vault v2.4.1 (Build 418)</p>
-        <p className="text-[11px] opacity-75">Protected under 256-bit client-side zero-knowledge architecture.</p>
+      <div className="flex flex-col items-center justify-center py-4 text-xs text-[#3e4947] dark:text-[#bdc9c6] space-y-2">
+        <img
+          src="/logo.jpg"
+          alt="ExpiTrack Logo"
+          className="w-12 h-12 rounded-2xl object-cover shadow-sm border border-[#eaedff] dark:border-[#283044]"
+          referrerPolicy="no-referrer"
+        />
+        <div className="text-center space-y-0.5">
+          <p className="font-bold text-[#131b2e] dark:text-white">ExpiTrack Personal Vault v2.4.1 (Build 418)</p>
+          <p className="text-[11px] opacity-75">Protected under 256-bit client-side zero-knowledge architecture.</p>
+        </div>
       </div>
 
       {/* MANDATORY Confirmation Dialog for Destructive Restore Operation */}

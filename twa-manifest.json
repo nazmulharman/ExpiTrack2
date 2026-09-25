@@ -1,0 +1,50 @@
+{
+  "packageId": "app.expitrack.vault",
+  "host": "ais-pre-26v6egkflimebrf3l4xb5y-739790172309.asia-east1.run.app",
+  "name": "ExpiTrack - Personal Expiry Vault",
+  "launcherName": "ExpiTrack",
+  "display": "standalone",
+  "themeColor": "#131B2E",
+  "themeColorDark": "#131B2E",
+  "navigationColor": "#131B2E",
+  "navigationColorDark": "#131B2E",
+  "navigationDividerColor": "#283044",
+  "navigationDividerColorDark": "#283044",
+  "backgroundColor": "#131B2E",
+  "enableNotifications": true,
+  "startUrl": "/",
+  "iconUrl": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/vaultwarden.png",
+  "maskableIconUrl": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/vaultwarden.png",
+  "splashScreenFadeOutDuration": 300,
+  "signingKey": {
+    "path": "./android.keystore",
+    "alias": "expitrack-key"
+  },
+  "appVersionCode": 1,
+  "appVersionName": "1.0.0",
+  "shortcuts": [
+    {
+      "name": "Scan Receipt or Bottle",
+      "shortName": "Scan OCR",
+      "url": "https://ais-pre-26v6egkflimebrf3l4xb5y-739790172309.asia-east1.run.app/?action=scan",
+      "chosenIconUrl": "https://ais-pre-26v6egkflimebrf3l4xb5y-739790172309.asia-east1.run.app/pwa-192x192.png"
+    }
+  ],
+  "generatorApp": "bubblewrap-cli",
+  "webManifestUrl": "https://ais-pre-26v6egkflimebrf3l4xb5y-739790172309.asia-east1.run.app/manifest.json",
+  "fallbackType": "customtabs",
+  "features": {
+    "locationDelegation": {
+      "enabled": false
+    },
+    "playBilling": {
+      "enabled": false
+    }
+  },
+  "alphaDependencies": {
+    "enabled": false
+  },
+  "enableSiteSettingsShortcut": true,
+  "isChromeOSOnly": false,
+  "isMetaQuest": false
+}

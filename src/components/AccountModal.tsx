@@ -88,11 +88,18 @@ export const AccountModal: React.FC<AccountModalProps> = ({
           <div className="p-4 rounded-2xl bg-[#f2f3ff] dark:bg-[#283044] border border-[#eaedff] dark:border-[#384259] flex items-start justify-between gap-3">
             <div className="flex items-center gap-3 min-w-0">
               <div className="relative shrink-0">
-                <img
-                  src={profile.avatarUrl}
-                  alt={profile.name}
-                  className="w-14 h-14 rounded-full object-cover shadow-sm border-2 border-white dark:border-[#131b2e]"
-                />
+                {profile.avatarUrl ? (
+                  <img
+                    src={profile.avatarUrl}
+                    alt={profile.name}
+                    className="w-14 h-14 rounded-full object-cover shadow-sm border-2 border-white dark:border-[#131b2e]"
+                    referrerPolicy="no-referrer"
+                  />
+                ) : (
+                  <div className="w-14 h-14 rounded-full bg-[#005c55] text-white flex items-center justify-center shadow-sm border-2 border-white dark:border-[#131b2e]">
+                    <span className="material-symbols-outlined text-[32px]">account_circle</span>
+                  </div>
+                )}
                 {profile.isGoogleLinked ? (
                   <div
                     className="absolute -bottom-0.5 -right-0.5 w-5 h-5 rounded-full bg-[#34A853] border-2 border-white dark:border-[#131b2e] flex items-center justify-center shadow-xs"

@@ -319,6 +319,19 @@ export const ArchiveView: React.FC<ArchiveViewProps> = ({
         </div>
       )}
 
+      {/* Empty State */}
+      {archivedItems.length === 0 && (
+        <div className="text-center py-12 bg-white dark:bg-[#131b2e] rounded-2xl border border-dashed border-[#eaedff] dark:border-[#283044] p-6 space-y-2">
+          <div className="w-12 h-12 mx-auto rounded-2xl bg-[#eaedff] dark:bg-[#283044] flex items-center justify-center text-slate-400">
+            <span className="material-symbols-outlined text-[28px]">archive</span>
+          </div>
+          <h3 className="font-bold text-sm text-[#131b2e] dark:text-white">Archive is Clean & Empty</h3>
+          <p className="text-xs text-slate-500 max-w-xs mx-auto leading-relaxed">
+            Resolved warranty claims, consumed groceries, and completed medications will appear here once archived.
+          </p>
+        </div>
+      )}
+
       {/* Insurance Dossier CTA */}
       <div className="p-4 rounded-2xl bg-[#eaedff] dark:bg-[#283044] flex flex-col gap-2.5 mt-2">
         <div className="flex items-center gap-2">

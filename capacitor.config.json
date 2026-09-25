@@ -1,0 +1,22 @@
+{
+  "appId": "app.expitrack.vault",
+  "appName": "ExpiTrack",
+  "webDir": "dist",
+  "bundledWebRuntime": false,
+  "server": {
+    "url": "https://ais-pre-26v6egkflimebrf3l4xb5y-739790172309.asia-east1.run.app",
+    "cleartext": true
+  },
+  "android": {
+    "allowMixedContent": true,
+    "captureInput": true,
+    "webContentsDebuggingEnabled": false
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 1500,
+      "backgroundColor": "#131b2e",
+      "showSpinner": false
+    }
+  }
+}

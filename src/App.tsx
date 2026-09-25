@@ -15,6 +15,7 @@ import {
   googleSignOut,
   googleSwitchAccount,
   getAccessToken,
+  DEFAULT_USER_PROFILE,
 } from './services/googleAuth';
 import {
   uploadVaultToDrive,
@@ -44,6 +45,7 @@ import { SettingsView } from './components/SettingsView';
 import { OnboardingModal } from './components/OnboardingModal';
 import { RecipeModal } from './components/RecipeModal';
 import { ProfileEditModal } from './components/ProfileEditModal';
+import { PublishApkModal } from './components/PublishApkModal';
 
 export function App() {
   const [items, setItems] = useState<ExpiryItem[]>(() => getStoredItems());
@@ -62,6 +64,7 @@ export function App() {
   const [recipeItem, setRecipeItem] = useState<ExpiryItem | null>(null);
   const [isProfileEditOpen, setIsProfileEditOpen] = useState(false);
   const [isAccountModalOpen, setIsAccountModalOpen] = useState(false);
+  const [isPublishApkOpen, setIsPublishApkOpen] = useState(false);
   const [isBackingUp, setIsBackingUp] = useState(false);
   const [isRestoring, setIsRestoring] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState<boolean>(() => {
@@ -456,7 +459,10 @@ export function App() {
   };
 
   const handleResetData = () => {
-    setItems(INITIAL_ITEMS);
+    setItems([]);
+    saveStoredItems([]);
+    setProfile(DEFAULT_USER_PROFILE);
+    saveStoredProfile(DEFAULT_USER_PROFILE);
     setNotificationSettings(DEFAULT_NOTIFICATION_SETTINGS);
     setSelectedItem(null);
     setActiveView('tab');
@@ -577,6 +583,13 @@ export function App() {
         showToast={showToast}
       />
 
+      {/* Android APK & Google Play Publishing Modal */}
+      <PublishApkModal
+        isOpen={isPublishApkOpen}
+        onClose={() => setIsPublishApkOpen(false)}
+        showToast={showToast}
+      />
+
       {/* Header */}
       <Header
         activeTab={activeTab}
@@ -653,6 +666,7 @@ export function App() {
             onGoBack={() => setActiveView('tab')}
             onOpenProfileEdit={() => setIsProfileEditOpen(true)}
             onOpenOnboarding={() => setShowOnboarding(true)}
+            onOpenPublishApk={() => setIsPublishApkOpen(true)}
             onGoogleSignIn={handleGoogleSignIn}
             onGoogleSignOut={handleGoogleSignOut}
             onSwitchAccount={handleSwitchAccount}
@@ -731,6 +745,7 @@ export function App() {
                 items={items}
                 profile={profile}
                 onOpenDossier={handleOpenDossier}
+                onOpenPublishApk={() => setIsPublishApkOpen(true)}
                 onBackupToDrive={handleBackupToDrive}
                 onRestoreFromDrive={handleRestoreFromDrive}
                 onConnectGoogle={handleGoogleSignIn}

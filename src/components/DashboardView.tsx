@@ -1096,42 +1096,76 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         )}
 
         {filteredItems.length === 0 && (
-          <div className="text-center py-12 bg-white dark:bg-[#131b2e] rounded-2xl border border-dashed border-[#eaedff] dark:border-[#283044] p-6">
-            <span className="material-symbols-outlined text-[36px] text-slate-400 mb-2">
-              {viewMode === 'pinned' ? 'keep' : viewMode === 'expiring' ? 'hourglass_disabled' : 'search_off'}
-            </span>
-            <h3 className="font-bold text-sm text-[#131b2e] dark:text-white">
-              {viewMode === 'pinned'
-                ? 'No Pinned Items Found'
-                : viewMode === 'expiring'
-                ? 'No Expiring Items Found'
-                : 'No Items Found'}
-            </h3>
-            <p className="text-xs text-slate-500 mt-1 max-w-xs mx-auto">
-              {viewMode === 'pinned'
-                ? 'Pin your daily medicines, groceries, or urgent warranties using the 📌 icon on any item card for 1-tap access.'
-                : viewMode === 'expiring'
-                ? 'Great news! There are no items expiring within 30 days matching your active filters.'
-                : 'Try adjusting your search query or clear the active filter to view all vault assets.'}
-            </p>
-            <div className="flex items-center justify-center gap-2 mt-3">
-              {viewMode !== 'all' && (
-                <button
-                  onClick={() => setViewMode('all')}
-                  className="px-3 py-1.5 rounded-lg bg-[#005c55] text-white text-xs font-semibold hover:bg-[#0f766e] transition-colors cursor-pointer"
-                >
-                  View All Items
-                </button>
-              )}
-              {statusFilter && (
-                <button
-                  onClick={() => setStatusFilter(null)}
-                  className="px-3 py-1.5 rounded-lg bg-slate-200 dark:bg-[#283044] text-slate-700 dark:text-slate-200 text-xs font-semibold cursor-pointer"
-                >
-                  Clear Status Filter
-                </button>
-              )}
+          <div className="text-center py-12 bg-white dark:bg-[#131b2e] rounded-2xl border border-dashed border-[#eaedff] dark:border-[#283044] p-6 space-y-3">
+            <div className="w-14 h-14 mx-auto rounded-2xl bg-[#6df5e1]/30 dark:bg-[#6df5e1]/20 flex items-center justify-center text-[#005c55] dark:text-[#6df5e1]">
+              <span className="material-symbols-outlined text-[32px]">
+                {activeItems.length === 0
+                  ? 'shield_lock'
+                  : viewMode === 'pinned'
+                  ? 'keep'
+                  : viewMode === 'expiring'
+                  ? 'hourglass_disabled'
+                  : 'search_off'}
+              </span>
             </div>
+            <div>
+              <h3 className="font-bold text-base text-[#131b2e] dark:text-white">
+                {activeItems.length === 0
+                  ? 'Your Vault is Clean & Empty'
+                  : viewMode === 'pinned'
+                  ? 'No Pinned Items Found'
+                  : viewMode === 'expiring'
+                  ? 'No Expiring Items Found'
+                  : 'No Items Found'}
+              </h3>
+              <p className="text-xs text-[#3e4947] dark:text-[#bdc9c6] mt-1 max-w-sm mx-auto leading-relaxed">
+                {activeItems.length === 0
+                  ? 'All demo data has been cleared. Add your first grocery item, medicine prescription, or product warranty to start tracking expiry dates.'
+                  : viewMode === 'pinned'
+                  ? 'Pin your daily medicines, groceries, or urgent warranties using the 📌 icon on any item card for 1-tap access.'
+                  : viewMode === 'expiring'
+                  ? 'Great news! There are no items expiring within 30 days matching your active filters.'
+                  : 'Try adjusting your search query or clear the active filter to view all vault assets.'}
+              </p>
+            </div>
+
+            {activeItems.length === 0 ? (
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-2 pt-2">
+                <button
+                  onClick={onOpenScanner}
+                  className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-[#005c55] text-white text-xs font-bold hover:bg-[#0f766e] transition-colors flex items-center justify-center gap-2 shadow-sm"
+                >
+                  <span className="material-symbols-outlined text-[18px]">document_scanner</span>
+                  <span>Scan Receipt or Label</span>
+                </button>
+                <button
+                  onClick={onOpenManualEntry}
+                  className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-[#283044] text-[#131b2e] dark:text-white text-xs font-bold hover:bg-slate-200 dark:hover:bg-[#343e57] transition-colors flex items-center justify-center gap-2"
+                >
+                  <span className="material-symbols-outlined text-[18px]">add_circle</span>
+                  <span>Add Manual Item</span>
+                </button>
+              </div>
+            ) : (
+              <div className="flex items-center justify-center gap-2 mt-3">
+                {viewMode !== 'all' && (
+                  <button
+                    onClick={() => setViewMode('all')}
+                    className="px-3 py-1.5 rounded-lg bg-[#005c55] text-white text-xs font-semibold hover:bg-[#0f766e] transition-colors cursor-pointer"
+                  >
+                    View All Items
+                  </button>
+                )}
+                {statusFilter && (
+                  <button
+                    onClick={() => setStatusFilter(null)}
+                    className="px-3 py-1.5 rounded-lg bg-slate-200 dark:bg-[#283044] text-slate-700 dark:text-slate-200 text-xs font-semibold cursor-pointer"
+                  >
+                    Clear Status Filter
+                  </button>
+                )}
+              </div>
+            )}
           </div>
         )}
       </section>
