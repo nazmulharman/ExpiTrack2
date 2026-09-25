@@ -79,7 +79,32 @@ export function App() {
 
   // UI state
   const [toast, setToast] = useState<{ message: string; icon?: string } | null>(null);
-  const [themeMode, setThemeMode] = useState<'light' | 'dark'>('light');
+  const [themeMode, setThemeMode] = useState<'light' | 'dark'>(() => {
+    try {
+      const saved = localStorage.getItem('expitrack_theme');
+      if (saved === 'light' || saved === 'dark') return saved;
+      if (typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        return 'dark';
+      }
+    } catch {
+      // ignore
+    }
+    return 'dark';
+  });
+
+  const handleToggleTheme = () => {
+    setThemeMode((prev) => {
+      const next = prev === 'light' ? 'dark' : 'light';
+      try {
+        sounds.playSuccessChime();
+      } catch {}
+      showToast(
+        next === 'dark' ? 'Dark mode enabled 🌙' : 'Light mode enabled ☀️',
+        next === 'dark' ? 'dark_mode' : 'light_mode'
+      );
+      return next;
+    });
+  };
 
   // Automated background schedule ticker: checks every 10 seconds for due consuming times
   useEffect(() => {
@@ -133,12 +158,19 @@ export function App() {
     saveStoredNotificationSettings(notificationSettings);
   }, [notificationSettings]);
 
-  // Apply dark mode class to html element
+  // Apply dark mode class to html & body elements and persist to localStorage
   useEffect(() => {
+    try {
+      localStorage.setItem('expitrack_theme', themeMode);
+    } catch {
+      // ignore
+    }
     if (themeMode === 'dark') {
       document.documentElement.classList.add('dark');
+      document.body.classList.add('dark');
     } else {
       document.documentElement.classList.remove('dark');
+      document.body.classList.remove('dark');
     }
   }, [themeMode]);
 
@@ -550,6 +582,8 @@ export function App() {
         activeTab={activeTab}
         activeView={activeView}
         profile={profile}
+        themeMode={themeMode}
+        onToggleTheme={handleToggleTheme}
         onGoBack={() => {
           if (activeView === 'item-detail' || activeView === 'add-item' || activeView === 'edit-item' || activeView === 'notification-settings' || activeView === 'settings') {
             setActiveView('tab');
@@ -614,7 +648,7 @@ export function App() {
             items={items}
             profile={profile}
             themeMode={themeMode}
-            onToggleTheme={() => setThemeMode((prev) => (prev === 'light' ? 'dark' : 'light'))}
+            onToggleTheme={handleToggleTheme}
             onResetData={handleResetData}
             onGoBack={() => setActiveView('tab')}
             onOpenProfileEdit={() => setIsProfileEditOpen(true)}

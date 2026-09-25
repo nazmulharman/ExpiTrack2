@@ -402,17 +402,82 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
       <div className="bg-white dark:bg-[#131b2e] p-4 rounded-2xl shadow-sm border border-[#eaedff] dark:border-[#283044] space-y-3">
         <span className="text-xs font-bold uppercase tracking-wider text-[#005c55] dark:text-[#6df5e1] flex items-center gap-1.5">
           <span className="material-symbols-outlined text-[18px]">palette</span>
-          Appearance
+          Appearance & Theme
         </span>
 
-        <div className="flex items-center justify-between py-1">
+        {/* Visual Theme Selection Cards */}
+        <div className="grid grid-cols-2 gap-3 pt-1">
+          {/* Light Mode Card */}
+          <button
+            type="button"
+            onClick={() => {
+              if (themeMode !== 'light') onToggleTheme();
+            }}
+            className={`p-3 rounded-2xl border-2 text-left transition-all flex flex-col justify-between h-28 relative ${
+              themeMode === 'light'
+                ? 'border-[#005c55] bg-gradient-to-br from-white to-[#f2f3ff] shadow-sm'
+                : 'border-[#eaedff] dark:border-[#283044] bg-[#f8f9ff] dark:bg-[#1a2333]/60 opacity-70 hover:opacity-100'
+            }`}
+          >
+            <div className="flex items-center justify-between w-full">
+              <div className="w-8 h-8 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center shadow-xs">
+                <span className="material-symbols-outlined text-[20px]" style={{ fontVariationSettings: "'FILL' 1" }}>
+                  light_mode
+                </span>
+              </div>
+              {themeMode === 'light' && (
+                <span className="w-5 h-5 rounded-full bg-[#005c55] text-white flex items-center justify-center shadow-xs">
+                  <span className="material-symbols-outlined text-[14px]">check</span>
+                </span>
+              )}
+            </div>
+            <div>
+              <span className="font-bold text-sm text-[#131b2e] dark:text-white block">Light Mode</span>
+              <span className="text-[10px] text-[#3e4947] dark:text-[#bdc9c6]">Crisp daylight contrast</span>
+            </div>
+          </button>
+
+          {/* Dark Mode Card */}
+          <button
+            type="button"
+            onClick={() => {
+              if (themeMode !== 'dark') onToggleTheme();
+            }}
+            className={`p-3 rounded-2xl border-2 text-left transition-all flex flex-col justify-between h-28 relative ${
+              themeMode === 'dark'
+                ? 'border-[#6df5e1] bg-gradient-to-br from-[#1a2333] to-[#131b2e] shadow-md shadow-[#6df5e1]/10'
+                : 'border-[#eaedff] dark:border-[#283044] bg-[#f8f9ff] dark:bg-[#1a2333]/60 opacity-70 hover:opacity-100'
+            }`}
+          >
+            <div className="flex items-center justify-between w-full">
+              <div className="w-8 h-8 rounded-xl bg-[#283044] text-[#6df5e1] flex items-center justify-center shadow-xs">
+                <span className="material-symbols-outlined text-[20px]" style={{ fontVariationSettings: "'FILL' 1" }}>
+                  dark_mode
+                </span>
+              </div>
+              {themeMode === 'dark' && (
+                <span className="w-5 h-5 rounded-full bg-[#6df5e1] text-[#006f64] flex items-center justify-center shadow-xs">
+                  <span className="material-symbols-outlined text-[14px]">check</span>
+                </span>
+              )}
+            </div>
+            <div>
+              <span className="font-bold text-sm text-[#131b2e] dark:text-white block">Dark Mode</span>
+              <span className="text-[10px] text-[#3e4947] dark:text-[#bdc9c6]">OLED dark blue contrast</span>
+            </div>
+          </button>
+        </div>
+
+        <div className="flex items-center justify-between py-1 border-t border-[#eaedff] dark:border-[#283044]">
           <div className="flex flex-col">
-            <span className="text-sm font-bold text-[#131b2e] dark:text-white">Color Theme</span>
-            <span className="text-xs text-[#3e4947] dark:text-[#bdc9c6]">Currently in {themeMode} mode</span>
+            <span className="text-sm font-bold text-[#131b2e] dark:text-white">Active Theme</span>
+            <span className="text-xs text-[#3e4947] dark:text-[#bdc9c6]">
+              {themeMode === 'dark' ? 'Dark Theme (Night / OLED friendly)' : 'Light Theme (High daylight clarity)'}
+            </span>
           </div>
           <button
             onClick={onToggleTheme}
-            className="px-3.5 py-1.5 rounded-xl bg-[#f2f3ff] dark:bg-[#283044] text-xs font-bold text-[#131b2e] dark:text-white flex items-center gap-1.5"
+            className="px-3.5 py-1.5 rounded-xl bg-[#f2f3ff] dark:bg-[#283044] text-xs font-bold text-[#131b2e] dark:text-white flex items-center gap-1.5 hover:bg-[#eaedff] transition-colors"
           >
             <span className="material-symbols-outlined text-[16px]">
               {themeMode === 'dark' ? 'light_mode' : 'dark_mode'}

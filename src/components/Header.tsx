@@ -5,6 +5,8 @@ interface HeaderProps {
   activeTab: ActiveTab;
   activeView: ActiveView;
   profile?: UserProfile;
+  themeMode?: 'light' | 'dark';
+  onToggleTheme?: () => void;
   onGoBack: () => void;
   onOpenSettings: () => void;
   onOpenAccount?: () => void;
@@ -16,6 +18,8 @@ export const Header: React.FC<HeaderProps> = ({
   activeTab,
   activeView,
   profile,
+  themeMode = 'dark',
+  onToggleTheme,
   onGoBack,
   onOpenSettings,
   onOpenAccount,
@@ -95,6 +99,22 @@ export const Header: React.FC<HeaderProps> = ({
 
         {/* Right Section */}
         <div className="flex items-center gap-1">
+          {onToggleTheme && (
+            <button
+              onClick={onToggleTheme}
+              title={themeMode === 'dark' ? "Switch to Light Mode" : "Switch to Dark Mode"}
+              aria-label="Toggle Dark Mode"
+              className="w-10 h-10 flex items-center justify-center rounded-full text-[#3e4947] dark:text-[#fde047] hover:bg-[#f2f3ff] dark:hover:bg-[#283044] transition-all active:scale-90"
+            >
+              <span
+                className="material-symbols-outlined text-[22px] transition-transform duration-300"
+                style={{ fontVariationSettings: "'FILL' 1" }}
+              >
+                {themeMode === 'dark' ? 'light_mode' : 'dark_mode'}
+              </span>
+            </button>
+          )}
+
           <button
             onClick={onCloudSync}
             title={profile?.isGoogleLinked ? "Google Drive Cloud Backup Active" : "Google Drive Not Connected"}
