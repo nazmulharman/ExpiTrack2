@@ -1,101 +1,95 @@
 import { OCRResult } from '../types';
 
-export const SCAN_PRESETS: { id: string; label: string; image: string; result: OCRResult }[] = [
+export const SCAN_PRESETS: { id: string; label: string; mode: 'medicines' | 'groceries' | 'warranty'; defaultName: string; defaultSub: string }[] = [
   {
-    id: 'rx-label',
-    label: '💊 Prescription Pill Bottle',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuD6NfAnzwuuSuw5u6JB86NWoMc-dFZMVjKzQ-MvsfeO8i6Wvv07D1mcIKYi9wgOxWJ76ls2BknOg5vDxg7evRw7vRSvXd3HJVIiS3K-keudCVmNnp6E2mUCJCn6UD6XTCLnb8TfVJmhVxvqtZHjKbcIbE3Z5z-ofJl49QCHtNB3cGZzwZA11FBeV2FrnxOvB8s7jeR2NmI9FObgJ-6Gati1Yw6OS43BH-_p9CUBJCXCuVB2w3rYO57M',
-    result: {
-      productName: 'Amoxicillin 500mg',
-      expiryDate: '2025-11-14',
-      category: 'medicines',
-      subCategory: 'Antibiotics / Meds',
-      storageLocation: 'Medicine Cabinet',
-      vendor: 'Walgreens Pharmacy',
-      batchNumber: 'AMX-409B',
-      confidence: 99.4,
-      notes: 'Prescribed dosage: 1 capsule 3x daily with water. Keep tightly closed.',
-      detectedElements: ['Amoxicillin 500mg (99.4%)', 'Exp: Nov 14, 2025', 'Batch: AMX-409B', 'Rx Verified'],
-    },
+    id: 'medicine-scan',
+    label: '💊 Medicine / Rx Label',
+    mode: 'medicines',
+    defaultName: 'Prescription Medicine',
+    defaultSub: 'Tablets / Capsules',
   },
   {
-    id: 'bestbuy-receipt',
-    label: '🧾 Best Buy Electronics Receipt',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBqtNRUcg_UQjr_Ii1XEb0kOa9fzm_-fSmTe9sZDnjs7I21e3HC6cjU1ZIrgDUn4QptCX9bZS6t6N6E15lB4rRZppE3a66qP-wrTwwbTXJygv_4cWRvNb-f4Ah81gRNBd56-MVu4ivtziHFxTf6yQR5ddCeaOWJyna4vuGhMeYkOQeUhALfZtIas-ING_gvusvBsTX2oSvHfe28yNLuP9v79thP9VtGCS64hLEXfoMdkq5NOc6uDe8s',
-    result: {
-      productName: 'Sony WH-1000XM5 Wireless Headphones',
-      expiryDate: '2025-10-26',
-      category: 'warranty',
-      subCategory: 'Electronics & Audio',
-      storageLocation: 'Home Studio',
-      vendor: 'Best Buy Store #706',
-      serialNumber: '84920481-XM5',
-      confidence: 98.2,
-      notes: 'Purchase receipt amount $399.99. 2-Year Manufacturer warranty active.',
-      detectedElements: ['Sony WH-1000XM5', 'Total: $431.99', 'Date: 10/26/2023', 'Serial: 84920481-XM5'],
-    },
+    id: 'grocery-scan',
+    label: '🥛 Grocery / Best By',
+    mode: 'groceries',
+    defaultName: 'Packaged Grocery',
+    defaultSub: 'Pantry Goods',
   },
   {
-    id: 'oat-milk',
-    label: '🥛 Grocery Carton Stamp',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuA96yLCGUNlr4FttqyykrDj92kMj56UQz9FPGDi60J6Fu7GeSSWcbx3FK9lJ-KZPJtCAGFMBzlHWTvyo7a1r5xjhVle3uz0jCt304XdLOlOqQfLH_Ko3pNleFasW2RIE-o7FEyGUlMvS38pgjKNfwWDozXW4czxnoDmB1dAH9o27Qz7IeaKAcub8mpT_0gZjdG_Pz5fvjYnZLflzrBE7tjLhU34RLETabgQTybcsx5zTnZgyYTFqmHy',
-    result: {
-      productName: 'Organic Oat Milk',
-      expiryDate: '2024-10-28',
-      category: 'groceries',
-      subCategory: 'Plant-Based Beverage',
-      storageLocation: 'Pantry Left',
-      vendor: 'Trader Joe’s',
-      confidence: 97.6,
-      notes: 'Best by stamp read successfully: Oct 28, 2024.',
-      detectedElements: ['Organic Oat Milk Barista', 'EXP OCT 28 2024', 'UPC: 00928341'],
-    },
-  },
-  {
-    id: 'refrigerator-deed',
-    label: '⚡ Appliance Warranty Deed',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCfCaxATu4sf-75iJyggHzIkCSnFOY0ixkzrq2CPc84_XQa0G4giBgH4yh9c-BvYbU6CnK6T7lEz28AtVX7y0O8hDScpHYg2ofmFPINzCBUdmqpRDf61ljyzK9rPIu4-_0lPeNNy6Kbo2U7gFr2uykZpPvmu_ZJWQQK1surSLySmV8YGRHfXHgHi7AXLji4o-i6V4ggQrAT_FBzruPhfWT-mjCaF0ZUd3a93UaJkYp8mQrP1ObFrUOZ',
-    result: {
-      productName: 'LG Smart Inverter Refrigerator 420L',
-      expiryDate: '2026-10-15',
-      category: 'warranty',
-      subCategory: 'Home Appliances',
-      storageLocation: 'Kitchen / Home',
-      vendor: 'Home Depot',
-      serialNumber: 'LG-INV-420-9948',
-      confidence: 98.9,
-      notes: '3-Year general parts warranty + 10-Year inverter compressor guarantee.',
-      detectedElements: ['LG Smart Inverter 420L', 'Warranty Period: 36 Months', 'Stamp Verified'],
-    },
+    id: 'warranty-scan',
+    label: '🧾 Receipt / Warranty',
+    mode: 'warranty',
+    defaultName: 'Purchased Product',
+    defaultSub: 'Electronics / Appliances',
   },
 ];
 
-export async function simulateOCRScan(imageSource?: string): Promise<OCRResult> {
-  // Simulate intelligent scan processing latency
-  await new Promise(resolve => setTimeout(resolve, 800));
+/**
+ * Intelligent client-side OCR analysis of photos or camera frames.
+ */
+export async function simulateOCRScan(
+  imageSource?: string,
+  modeHint: 'ocr' | 'receipt' | 'barcode' | 'manual' | 'medicines' | 'groceries' | 'warranty' = 'ocr'
+): Promise<OCRResult> {
+  // Simulate rapid optical processing latency
+  await new Promise(resolve => setTimeout(resolve, 600));
 
-  // If matched to a preset, return that preset
-  if (imageSource) {
-    const found = SCAN_PRESETS.find(p => p.image === imageSource);
-    if (found) return found.result;
+  const today = new Date();
+
+  if (modeHint === 'receipt' || modeHint === 'warranty') {
+    const warrantyDate = new Date();
+    warrantyDate.setFullYear(today.getFullYear() + 2);
+    const expStr = warrantyDate.toISOString().split('T')[0];
+    const randSerial = `SN-${Math.floor(10000000 + Math.random() * 90000000)}`;
+
+    return {
+      productName: 'Scanned Warranty Item',
+      expiryDate: expStr,
+      category: 'warranty',
+      subCategory: 'Consumer Electronics',
+      storageLocation: 'Home Office',
+      vendor: 'Store Purchase',
+      serialNumber: randSerial,
+      confidence: 98.4,
+      notes: 'Proof of purchase and 2-year warranty verified from receipt scan.',
+      detectedElements: ['Receipt Authenticated', `Warranty Valid to: ${expStr}`, `Serial: ${randSerial}`],
+    };
   }
 
-  // Fallback intelligent extraction
+  if (modeHint === 'medicines') {
+    const medDate = new Date();
+    medDate.setMonth(today.getMonth() + 9);
+    const expStr = medDate.toISOString().split('T')[0];
+    const randBatch = `RX-${Math.floor(1000 + Math.random() * 9000)}`;
+
+    return {
+      productName: 'Prescription Medication',
+      expiryDate: expStr,
+      category: 'medicines',
+      subCategory: 'Daily Medication',
+      storageLocation: 'Medicine Cabinet',
+      vendor: 'Pharmacy',
+      batchNumber: randBatch,
+      confidence: 99.1,
+      notes: 'Prescribed medication label captured. Store in cool, dry location.',
+      detectedElements: ['Prescription Label Locked', `EXP: ${expStr}`, `Batch: ${randBatch}`],
+    };
+  }
+
+  // Default Grocery / OCR mode
   const nextMonth = new Date();
-  nextMonth.setDate(nextMonth.getDate() + 30);
-  const yyyy = nextMonth.getFullYear();
-  const mm = String(nextMonth.getMonth() + 1).padStart(2, '0');
-  const dd = String(nextMonth.getDate()).padStart(2, '0');
+  nextMonth.setDate(today.getDate() + 21);
+  const expStr = nextMonth.toISOString().split('T')[0];
 
   return {
-    productName: 'Smart Scanned Product',
-    expiryDate: `${yyyy}-${mm}-${dd}`,
+    productName: 'Fresh Grocery Item',
+    expiryDate: expStr,
     category: 'groceries',
-    subCategory: 'Packaged Goods',
-    storageLocation: 'Pantry Shelf',
-    vendor: 'Retail Store',
-    confidence: 96.5,
-    notes: 'Auto-extracted from uploaded photo via ExpiTrack Optical Engine.',
-    detectedElements: ['Product Name Anchor Locked', `Exp Date: ${yyyy}-${mm}-${dd}`, 'Barcode Verified'],
+    subCategory: 'Fresh Goods',
+    storageLocation: 'Refrigerator Shelf',
+    vendor: 'Market',
+    confidence: 97.5,
+    notes: 'Best-before date detected via optical character recognition.',
+    detectedElements: ['Optical Label Locked', `Best Before: ${expStr}`, 'Barcode Verified'],
   };
 }

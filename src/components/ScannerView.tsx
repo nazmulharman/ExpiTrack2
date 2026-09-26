@@ -20,7 +20,16 @@ export const ScannerView: React.FC<ScannerViewProps> = ({
   const [gridOn, setGridOn] = useState(true);
   const [selectedPresetIndex, setSelectedPresetIndex] = useState(0);
   const [isScanning, setIsScanning] = useState(false);
-  const [detectedResult, setDetectedResult] = useState<OCRResult>(SCAN_PRESETS[0].result);
+  const [detectedResult, setDetectedResult] = useState<OCRResult>({
+    productName: 'Ready to Scan',
+    expiryDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+    category: 'groceries',
+    subCategory: 'Pantry Goods',
+    storageLocation: 'Pantry / Refrigerator',
+    confidence: 98.5,
+    notes: 'Position product label, expiration date, or receipt in view.',
+    detectedElements: ['Optical Engine Calibrated', 'Sensor Active'],
+  });
   const [customImageUri, setCustomImageUri] = useState<string | null>(null);
   const [useLiveCamera, setUseLiveCamera] = useState(false);
   const [cameraStream, setCameraStream] = useState<MediaStream | null>(null);
@@ -29,8 +38,8 @@ export const ScannerView: React.FC<ScannerViewProps> = ({
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  const activePreset = SCAN_PRESETS[selectedPresetIndex];
-  const activeImage = customImageUri || activePreset.image;
+  const activePreset = SCAN_PRESETS[selectedPresetIndex] || SCAN_PRESETS[0];
+  const activeImage = customImageUri || '';
 
   // Toggle live camera
   const toggleLiveCamera = async () => {
@@ -75,10 +84,20 @@ export const ScannerView: React.FC<ScannerViewProps> = ({
     };
   }, [useLiveCamera, cameraStream]);
 
-  // When preset index changes, update detected result
+  // Update detected result when category target changes
   useEffect(() => {
     if (!customImageUri && !useLiveCamera) {
-      setDetectedResult(SCAN_PRESETS[selectedPresetIndex].result);
+      const preset = SCAN_PRESETS[selectedPresetIndex] || SCAN_PRESETS[0];
+      setDetectedResult({
+        productName: preset.defaultName,
+        expiryDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        category: preset.mode,
+        subCategory: preset.defaultSub,
+        storageLocation: preset.mode === 'medicines' ? 'Medicine Cabinet' : preset.mode === 'warranty' ? 'Home Office' : 'Pantry / Fridge',
+        confidence: 98,
+        notes: `Position ${preset.defaultName.toLowerCase()} within the frame to extract details.`,
+        detectedElements: ['Optical Engine Ready', `Mode: ${preset.label}`],
+      });
     }
   }, [selectedPresetIndex, customImageUri, useLiveCamera]);
 
@@ -103,7 +122,8 @@ export const ScannerView: React.FC<ScannerViewProps> = ({
         }
       }
 
-      const result = await simulateOCRScan(imageToAnalyze);
+      const preset = SCAN_PRESETS[selectedPresetIndex];
+      const result = await simulateOCRScan(imageToAnalyze, preset ? preset.mode : activeMode);
       setDetectedResult(result);
       showToast(`Detected: ${result.productName}`, 'check_circle');
     } catch {
@@ -122,7 +142,8 @@ export const ScannerView: React.FC<ScannerViewProps> = ({
         setCustomImageUri(uri);
         setIsScanning(true);
         showToast('Processing uploaded document...', 'upload');
-        const res = await simulateOCRScan(uri);
+        const preset = SCAN_PRESETS[selectedPresetIndex];
+        const res = await simulateOCRScan(uri, preset ? preset.mode : activeMode);
         setDetectedResult(res);
         setIsScanning(false);
         showToast('Details extracted from uploaded photo!', 'verified');
@@ -245,10 +266,10 @@ export const ScannerView: React.FC<ScannerViewProps> = ({
         </div>
       </div>
 
-      {/* Preset Target Selector Pills */}
+      {/* Target Category Selector Pills */}
       <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-2">
         <span className="text-[10px] font-bold uppercase tracking-wider text-[#3e4947] dark:text-[#bdc9c6] shrink-0 pl-1">
-          {useLiveCamera ? 'Active:' : 'Sample:'}
+          {useLiveCamera ? 'Optical Feed:' : 'Target:'}
         </span>
         {useLiveCamera ? (
           <span className="px-2.5 py-1 rounded-lg text-xs font-bold bg-[#6df5e1]/40 text-[#006f64] dark:text-[#6df5e1] flex items-center gap-1">
@@ -260,11 +281,11 @@ export const ScannerView: React.FC<ScannerViewProps> = ({
             <button
               key={preset.id}
               onClick={() => {
-                setCustomImageUri(null);
                 setSelectedPresetIndex(idx);
+                setActiveMode(preset.mode === 'groceries' ? 'ocr' : preset.mode === 'warranty' ? 'receipt' : 'ocr');
               }}
               className={`px-2.5 py-1 rounded-lg text-xs font-semibold shrink-0 transition-all ${
-                !customImageUri && selectedPresetIndex === idx
+                selectedPresetIndex === idx
                   ? 'bg-[#005c55] text-white shadow-xs'
                   : 'bg-white dark:bg-[#131b2e] border border-[#eaedff] dark:border-[#283044] text-[#3e4947] dark:text-[#bdc9c6]'
               }`}
@@ -277,7 +298,7 @@ export const ScannerView: React.FC<ScannerViewProps> = ({
 
       {/* Camera Viewfinder Stage */}
       <div className="relative w-full aspect-[4/5] rounded-2xl overflow-hidden shadow-md bg-slate-900 flex items-center justify-center">
-        {/* Live Video Feed or Simulated Sensor Feed */}
+        {/* Live Video Feed or Custom Image Feed */}
         {useLiveCamera ? (
           <video
             ref={videoRef}
@@ -286,11 +307,28 @@ export const ScannerView: React.FC<ScannerViewProps> = ({
             muted
             className="absolute inset-0 w-full h-full object-cover"
           />
-        ) : (
+        ) : customImageUri ? (
           <div
             className="absolute inset-0 bg-cover bg-center transition-all duration-300"
-            style={{ backgroundImage: `url('${activeImage}')` }}
+            style={{ backgroundImage: `url('${customImageUri}')` }}
           ></div>
+        ) : (
+          <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center bg-gradient-to-b from-[#131b2e] via-[#1a233a] to-[#0f172a] text-white">
+            <div className="w-16 h-16 rounded-2xl bg-white/10 flex items-center justify-center mb-3 text-[#71f8e4] shadow-inner">
+              <span className="material-symbols-outlined text-[34px]">photo_camera</span>
+            </div>
+            <p className="text-sm font-bold text-white mb-1">Optical Viewfinder Ready</p>
+            <p className="text-xs text-slate-300 max-w-[220px] leading-relaxed">
+              Aim at receipt, expiry date, or upload photo from device
+            </p>
+            <button
+              onClick={toggleLiveCamera}
+              className="mt-4 px-3.5 py-1.5 rounded-xl bg-[#005c55] text-white text-xs font-semibold hover:bg-[#0f766e] flex items-center gap-1.5 shadow-sm active:scale-95 transition-all"
+            >
+              <span className="material-symbols-outlined text-[16px]">videocam</span>
+              <span>Enable Live Camera</span>
+            </button>
+          </div>
         )}
 
         {/* Viewfinder Darkening Overlay */}

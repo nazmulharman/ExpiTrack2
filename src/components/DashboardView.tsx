@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { ExpiryItem, ItemCategory } from '../types';
 import { getDaysRemaining, formatDisplayDate, getExpiryStatus } from '../utils/dateUtils';
 import { getMedicineStockStats, recordDoseConsumption, refillMedicineStock, formatQuantity } from '../utils/medicineUtils';
+import { PWAInstallBanner } from './PWAInstallBanner';
 
 interface DashboardViewProps {
   items: ExpiryItem[];
@@ -233,6 +234,9 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
   return (
     <div className="flex flex-col gap-4 pb-28 pt-2">
+      {/* Mobile PWA Install Prompt Banner */}
+      <PWAInstallBanner />
+
       {/* 1. Vault Health & Expiry Banner */}
       <section className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#0f766e] via-[#005c55] to-[#053833] p-4 text-white shadow-md">
         <div className="absolute -right-10 -bottom-10 w-44 h-44 rounded-full bg-[#6df5e1]/10 pointer-events-none blur-2xl"></div>
@@ -879,7 +883,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           <div className="flex gap-3 overflow-x-auto no-scrollbar -mx-4 px-4 pt-1 pb-2 snap-x">
             {urgentItems.map(item => {
               const status = getExpiryStatus(item.expiryDate);
-              const isAmox = item.name.includes('Amoxicillin');
+              const isMedicine = item.category === 'medicines';
 
               return (
                 <div
@@ -956,7 +960,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
                   {/* Contextual Action Buttons */}
                   <div className="flex items-center gap-2 mt-auto">
-                    {isAmox ? (
+                    {isMedicine ? (
                       <>
                         <button
                           onClick={() => onArchiveItem(item)}

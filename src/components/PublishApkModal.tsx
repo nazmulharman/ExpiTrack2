@@ -19,8 +19,7 @@ export const PublishApkModal: React.FC<PublishApkModalProps> = ({
 
   if (!isOpen) return null;
 
-  const rawOrigin = typeof window !== 'undefined' ? window.location.origin : 'https://ais-pre-26v6egkflimebrf3l4xb5y-739790172309.asia-east1.run.app';
-  // Use public preview origin if on ais-dev so external packaging bots can reach the URL
+  const rawOrigin = import.meta.env.VITE_APP_URL || (typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000');
   const currentOrigin = rawOrigin.replace('ais-dev-', 'ais-pre-');
   const manifestUrl = `${currentOrigin}/manifest.json`;
   const pwaBuilderUrl = `https://www.pwabuilder.com/reportcard?site=${encodeURIComponent(currentOrigin)}`;

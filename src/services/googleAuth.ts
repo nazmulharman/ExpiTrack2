@@ -1,13 +1,11 @@
-import { initializeApp, getApps, getApp } from 'firebase/app';
 import {
-  getAuth,
   signInWithPopup,
   GoogleAuthProvider,
   onAuthStateChanged,
   signOut,
   User,
 } from 'firebase/auth';
-import firebaseConfig from '../../firebase-applet-config.json';
+import { auth } from './firebase';
 import { UserProfile } from '../types';
 
 // The exact OAuth scopes configured for Google Workspace Drive and User Profile
@@ -17,8 +15,7 @@ export const SCOPES = [
   'https://www.googleapis.com/auth/drive.file',
 ];
 
-const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
-export const auth = getAuth(app);
+export { auth };
 
 const createProvider = (forceSelectAccount = false): GoogleAuthProvider => {
   const p = new GoogleAuthProvider();
@@ -60,11 +57,6 @@ export const getStoredProfile = (): UserProfile => {
     const raw = localStorage.getItem(PROFILE_STORAGE_KEY);
     if (!raw) return DEFAULT_USER_PROFILE;
     const parsed = JSON.parse(raw);
-    // Clear out any old demo/hardcoded personal profile details
-    if (parsed.email === 'nazmulsa213@gmail.com' || parsed.name === 'Nazmul Hoque' || parsed.vaultName?.includes('Nazmul')) {
-      localStorage.removeItem(PROFILE_STORAGE_KEY);
-      return DEFAULT_USER_PROFILE;
-    }
     return { ...DEFAULT_USER_PROFILE, ...parsed };
   } catch {
     return DEFAULT_USER_PROFILE;

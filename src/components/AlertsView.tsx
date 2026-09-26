@@ -88,7 +88,11 @@ export const AlertsView: React.FC<AlertsViewProps> = ({
   };
 
   const handleTestPing = () => {
-    showToast('🔔 ExpiTrack Ping: Amoxicillin 500mg requires attention!', 'notifications_active');
+    const activeItem = items.find(i => i.status === 'active');
+    const msg = activeItem
+      ? `🔔 ExpiTrack Ping: "${activeItem.name}" expiry checkpoint verified!`
+      : '🔔 ExpiTrack Ping: Smart notification system is active!';
+    showToast(msg, 'notifications_active');
   };
 
   return (

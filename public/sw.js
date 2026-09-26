@@ -8,7 +8,8 @@ const PRECACHE_ASSETS = [
   '/pwa-192x192.png',
   '/pwa-512x512.png',
   '/pwa-maskable-512x512.png',
-  '/apple-touch-icon.png'
+  '/apple-touch-icon.png',
+  '/logo.jpg'
 ];
 
 self.addEventListener('install', (event) => {

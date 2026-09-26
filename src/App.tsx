@@ -6,6 +6,8 @@ import {
   getStoredNotificationSettings,
   saveStoredNotificationSettings,
   calculateVaultCounts,
+  loadItemsFromLocalDatabase,
+  clearAllLocalVaultData,
 } from './services/storage';
 import {
   getStoredProfile,
@@ -151,7 +153,16 @@ export function App() {
     };
   }, []);
 
-  // Sync items to localStorage
+  // Hydrate items from user's local IndexedDB database if available
+  useEffect(() => {
+    loadItemsFromLocalDatabase().then((dbItems) => {
+      if (dbItems && dbItems.length > 0 && items.length === 0) {
+        setItems(dbItems);
+      }
+    });
+  }, []);
+
+  // Sync items to localStorage and user's local IndexedDB
   useEffect(() => {
     saveStoredItems(items);
   }, [items]);
@@ -458,15 +469,16 @@ export function App() {
     handleArchiveItem(item, 'consumed');
   };
 
-  const handleResetData = () => {
+  const handleResetData = async () => {
     setItems([]);
-    saveStoredItems([]);
+    await clearAllLocalVaultData();
     setProfile(DEFAULT_USER_PROFILE);
     saveStoredProfile(DEFAULT_USER_PROFILE);
     setNotificationSettings(DEFAULT_NOTIFICATION_SETTINGS);
     setSelectedItem(null);
     setActiveView('tab');
     setActiveTab('dashboard');
+    showToast('Vault cleared. All local database records reset.', 'delete_sweep');
   };
 
   const handleConfirmDetected = (ocr: OCRResult, imageUri?: string) => {
